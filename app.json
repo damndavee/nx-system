@@ -1,0 +1,9 @@
+{
+  "plugins": [
+    "expo-build-properties",
+    "expo-router"
+  ],
+  "android": {
+    "package": "com.maddavee.systemsource"
+  }
+}

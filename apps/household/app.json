@@ -2,31 +2,56 @@
   "expo": {
     "name": "Household",
     "slug": "household",
+    "newArchEnabled": true,
+    "scheme": "household",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "image": "./assets/icon-fore.png",
+      "resizeMode": "cover",
+      "backgroundColor": "#8BC7F3"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.maddavee.household",
+      "googleServicesFile": "./GoogleService-Info.plist"
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/icon-fore.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "package": "com.maddavee.household",
+      "googleServicesFile": "./google-services.json"
     },
     "web": {
-      "favicon": "./assets/favicon.png",
+      "favicon": "./assets/favicon.ico",
       "bundler": "metro"
     },
-    "plugins": []
+    "plugins": [
+      "@react-native-firebase/app",
+      "@react-native-firebase/auth",
+      "@react-native-firebase/crashlytics",
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "useFrameworks": "static"
+          }
+        }
+      ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "aaaafd35-15c4-411b-95e1-556063d7774e"
+      }
+    }
   }
 }

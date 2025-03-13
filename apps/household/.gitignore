@@ -1,0 +1,11 @@
+node_modules/
+./expo
+dist/
+
+.DS_Store
+
+android/
+ios/
+
+google-services.json
+GoogleService-Info.plist
