@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, Pressable } from 'react-native';
+import { Text, View, Pressable } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { SvgXml } from "react-native-svg";
 
@@ -21,28 +21,28 @@ const svgMarkup = `
 
 const WelcomeScreen = () => {
     return (
-        <SafeAreaView>
-        <View>             
-            <SvgXml xml={svgMarkup} width="300" height="300" />
-            <View>
-                <Text>
-                    Household
-                </Text>
-                <Text>
-                    Zarządzaj domem, obowiązkami i planami. Połącz się z bliskimi w jednej aplikacji.
-                </Text>
-            </View>
+        <SafeAreaView className='flex-1'>
+            <View className="flex-1 items-center bg-white p-8">             
+                <SvgXml xml={svgMarkup} width="300" height="300" />
+                <View className='gap-2 mt-2'>
+                    <Text className="text-4xl font-bold text-center text-black">
+                        Household
+                    </Text>
+                    <Text className="text-gray-500 text-center">
+                        Zarządzaj domem, obowiązkami i planami. Połącz się z bliskimi w jednej aplikacji.
+                    </Text>
+                </View>
 
-            <View >
-                <Pressable>
-                    <Text>Dołącz</Text>
-                </Pressable>
-                <Pressable>
-                    <Text>Stwórz</Text>
-                </Pressable>
+                <View className="flex-row w-full bg-gray-200 rounded-lg absolute bottom-10">
+                    <Pressable className="bg-black align-center px-12 py-4 rounded-lg flex-1">
+                        <Text className="text-white font-semibold text-center">Dołącz</Text>
+                    </Pressable>
+                    <Pressable className="px-12 align-center py-4 rounded-lg flex-1">
+                        <Text className="text-black font-semibold text-center">Stwórz</Text>
+                    </Pressable>
+                </View>
             </View>
-        </View>
-    </SafeAreaView>
+        </SafeAreaView>
     )
 }
 
