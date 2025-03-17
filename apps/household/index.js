@@ -1,4 +1,5 @@
 import 'expo-router/entry';
+import "expo-asset";
 
 import { registerRootComponent } from 'expo';
 import { ExpoRoot } from 'expo-router';

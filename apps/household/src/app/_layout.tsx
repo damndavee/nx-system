@@ -10,17 +10,18 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-    const [loaded] = useFonts({
-        SpaceMono: require('../../assets/fonts/SpaceMono-Regular.ttf'),
+    const [fontsLoaded] = useFonts({
+        SpaceMono: require('../../assets/fonts/SpaceMonoRegular.ttf'),
     });
 
     useEffect(() => {
-        if (loaded) {
+        if (fontsLoaded) {
+            console.log("✅ Fonts Loaded!");
             SplashScreen.hideAsync();
         }
-    }, [loaded]);
+    }, [fontsLoaded]);
 
-    if (!loaded) {
+    if (!fontsLoaded) {
         return null;
     }
 
