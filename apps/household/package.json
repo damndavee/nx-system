@@ -26,7 +26,7 @@
     "react-native-svg-transformer": "*",
     "react-native-web": "*",
     "react-native-safe-area-context": "*",
-    "expo-router": "*",
+    "expo-router": "~4.0.19",
     "react-native-reanimated": "*",
     "expo-system-ui": "*",
     "expo-linking": "*",
@@ -38,10 +38,16 @@
     "metro-resolver": "*",
     "picocolors": "*",
     "tsconfig-paths": "*",
-    "expo-font": "*",
     "expo-dev-client": "*",
     "react-native-gesture-handler": "*",
-    "react-native-screens": "*"
+    "react-native-screens": "*",
+    "expo-font": "*",
+    "expo-asset": "*",
+    "expo-file-system": "*",
+    "nativewind": "*",
+    "react-native-reanimated@3.16.2": "*",
+    "tailwindcss@^3.4.17": "*",
+    "react-native-css-interop": "*"
   },
   "devDependencies": {
     "@eslint/js": "^9.8.0",
@@ -85,6 +91,7 @@
     "typescript-eslint": "^8.19.0"
   },
   "resolutions": {
-    "org.jetbrains.kotlin:kotlin-gradle-plugin": "1.9.25"
+    "org.jetbrains.kotlin:kotlin-gradle-plugin": "1.9.25",
+    "@react-native/assets-registry": "0.76.7"
   }
 }
