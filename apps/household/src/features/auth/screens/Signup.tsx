@@ -3,6 +3,9 @@ import React from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { SvgXml } from 'react-native-svg';
 import { vars } from 'nativewind';
+import { Formik } from 'formik';
+import { SignUpForm, validationSignupSchema } from '../../../services/validation/auth.schema';
+import { signUpWithEmail } from '../../../services/firebase/auth';
 
 // https://undraw.co/
 const svgMarkup = `
@@ -13,20 +16,41 @@ const signupVars = vars({
   '--purple-color-hex': '#6c63ff',
 });
 
+const INIT_STATE = {
+  email: '', password: '', confirmPassword: ''
+}
+
+const INPUT_STYLES = 'p-3 border border-gray-200'
+
 const SignupScreen = () => {
+
+  const handleFormSubmission = (values: SignUpForm) => {
+    signUpWithEmail(values.email, values.password);
+  }
+
   return (
     <SafeAreaView style={signupVars} className='flex-1 bg-white'>
-      <View className="flex-1 items-center bg-white p-8">
+      <View className="flex-1 items-center bg-white px-8">
         <SvgXml xml={svgMarkup} width="150" height="150" />
         <Text>Dołącz do społeczności</Text>
-        <View className='gap-3 my-5 w-full'>
-          <TextInput className='p-3 border border-gray-200' placeholder='Enter email' />
-          <TextInput className='p-3 border border-gray-200' placeholder='Enter password' />
-          <TextInput className='p-3 border border-gray-200' placeholder='Confirm password' />
+        <View className='w-full'>
+          <Formik initialValues={INIT_STATE} validationSchema={validationSignupSchema} onSubmit={handleFormSubmission}>
+            {({ handleChange, handleBlur, handleSubmit, values, errors, touched, handleReset }) => (
+              <View className='gap-3'>
+                <TextInput id='email' value={values.email} onBlur={() => handleBlur('email')} onChangeText={handleChange('email')} className={INPUT_STYLES} placeholder='Enter email' />
+                <TextInput id='password' value={values.password} onBlur={() => handleBlur('password')} onChangeText={handleChange('password')} className={INPUT_STYLES} placeholder='Enter password' />
+                <TextInput id='confirmPassword' value={values.confirmPassword} onBlur={() => handleBlur('confirmPassword')} onChangeText={handleChange('confirmPassword')} className={INPUT_STYLES} placeholder='Confirm password' />
+                <Pressable onPress={handleSubmit} className="bg-[--purple-color-hex] px-12 py-4 rounded-lg w-full">
+                    <Text className="text-white font-semibold text-center">Dołącz</Text>
+                </Pressable>
+                <Pressable onPress={handleSubmit} className="bg-[--purple-color-hex] px-12 py-4 rounded-lg w-full">
+                    <Text className="text-white font-semibold text-center">Posiadasz konto? Zaloguj sie</Text>
+                </Pressable>
+              </View>
+            )}
+          </Formik>
+          <Text>Rejestrując się akceptujesz politykę prywatności firmy i regulamin korzystania z aplikacji.</Text>
         </View>
-        <Pressable onPress={() => console.log("submiting")} className="bg-[--purple-color-hex] px-12 py-4 rounded-lg w-full">
-            <Text className="text-white font-semibold text-center">Dołącz</Text>
-        </Pressable>
       </View>
     </SafeAreaView>
   )
