@@ -5,7 +5,7 @@ import { Formik } from 'formik';
 import { SignUpForm, validationSignupSchema } from '../../../services/validation/auth.schema';
 import { FormControl, FormControlProps } from '../../../components/FormControl';
 import { cssInterop } from 'nativewind';
-import { Stack } from 'expo-router';
+import { router, Stack } from 'expo-router';
 
 // https://undraw.co/
 const svgMarkup = `
@@ -93,7 +93,9 @@ const SignupScreen = () => {
             </Formik>
             <View className='flex-row justify-center gap-1 mt-10'>
                 <Text className="text-gray-800 text-center">Posiadasz konto?</Text>
-                <Pressable><Text className="text-[#6c63ff] text-center underline">Zaloguj się.</Text></Pressable>
+                <Pressable onPress={() => router.replace('/(auth)/signin')}>
+                  <Text className="text-[#6c63ff] text-center underline">Zaloguj się.</Text>
+                </Pressable>
             </View>
           </View>
         </ScrollView>

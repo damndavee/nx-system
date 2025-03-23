@@ -1,7 +1,7 @@
 import { KeyboardAvoidingView, Platform, Pressable, ScrollView, Text, View } from 'react-native'
 import React from 'react'
 import { SvgXml } from 'react-native-svg';
-import { Stack } from 'expo-router';
+import { router, Stack } from 'expo-router';
 import { cssInterop } from 'nativewind';
 import { FormControl, FormControlProps } from '../../../components/FormControl';
 import { Formik } from 'formik';
@@ -127,7 +127,9 @@ const SigninScreen = () => {
             </View>
             <View className='flex-row justify-center gap-1 mt-10'>
                 <Text className="text-gray-800 text-center">Nie posiadasz konta?</Text>
-                <Pressable><Text className="text-[#6c63ff] text-center underline">Zarejestruj się.</Text></Pressable>
+                <Pressable onPress={() => router.replace('/(auth)/signup')}>
+                  <Text className="text-[#6c63ff] text-center underline">Zarejestruj się.</Text>
+                </Pressable>
             </View>
           </View>
         </ScrollView>
