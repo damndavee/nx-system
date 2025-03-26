@@ -50,7 +50,11 @@
     "react-native-css-interop": "*",
     "formik": "*",
     "yup": "*",
-    "tailwind-variants": "*"
+    "tailwind-variants": "*",
+    "@expo/vector-icons": "*",
+    "react-hook-form": "*",
+    "@hookform/resolvers": "*",
+    "zod": "*"
   },
   "devDependencies": {
     "@eslint/js": "^9.8.0",
