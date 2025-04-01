@@ -8,6 +8,7 @@ import { cssInterop } from 'nativewind';
 import { router, Stack } from 'expo-router';
 import { signupSvgMarkup } from '../../../components/markups';
 import { INPUT_MAP } from "../../../data/auth.data";
+import { signUpWithEmail } from '../../../services/firebase/auth';
 
 const SignupScreen = () => {
   const { control, handleSubmit } = useForm<SignupFormSchema>({
@@ -24,7 +25,11 @@ const SignupScreen = () => {
     contentContainerClassName: "contentContainerStyle",
   });
 
-  const onSubmit = handleSubmit((data) => console.log("DATA: ", data), (errors) => console.log("ERRORS: ", errors));
+  const onSubmit = handleSubmit(
+    (data) => {
+      signUpWithEmail(data.email, data.password);
+    }, 
+    (errors) => console.log("ERRORS: ", errors));
 
   return (
     <>

@@ -54,7 +54,10 @@
     "@expo/vector-icons": "*",
     "react-hook-form": "*",
     "@hookform/resolvers": "*",
-    "zod": "*"
+    "zod": "*",
+    "buffer": "*",
+    "react-native-otp-entry": "*",
+    "tailwind-merge": "*"
   },
   "devDependencies": {
     "@eslint/js": "^9.8.0",

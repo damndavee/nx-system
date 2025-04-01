@@ -9,6 +9,7 @@ import { SigninFormSchema, validationSigninSchema } from "../../../validation/au
 import { Divider } from '../../../components/Divider';
 import { appleMarkup, facebookMarkup, googleMarkup, signinSvgMarkup } from '../../../components/markups';
 import { INPUT_MAP } from "../../../data/auth.data";
+import { signInWithEmail } from 'apps/household/src/services/firebase/auth';
 
 const SigninScreen = () => {
   cssInterop(ScrollView, {
@@ -26,7 +27,11 @@ const SigninScreen = () => {
 
   const SIGNIN_INPUT_DATA = INPUT_MAP.filter(input => input.id !== 'confirmPassword') as Pick<FormControlProps<SigninFormSchema>, 'id' | 'placeholder' | 'label' | 'helperText' | 'icon' | 'type'>[];
 
-  const onSubmit = handleSubmit((data) => console.log("DATA: ", data), (errors) => console.log("ERRORS: ", errors));
+  const onSubmit = handleSubmit(
+    (data) => {
+      signInWithEmail(data.email, data.password);
+    }, 
+    (errors) => console.log("ERRORS: ", errors));
 
   return (
     <>
