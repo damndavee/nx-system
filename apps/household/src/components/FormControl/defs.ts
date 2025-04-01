@@ -2,7 +2,7 @@ import { tv } from 'tailwind-variants';
 import type { VariantProps } from 'tailwind-variants';
 import { Ionicons } from "@expo/vector-icons"
 import { ChangeEvent } from "react";
-import { FormikErrors } from "formik";
+import { Path } from 'react-hook-form';
 
 const formControlVariants = tv({
     base: "",
@@ -61,10 +61,10 @@ type FormControlProps<T> = VariantProps<typeof formControlVariants> & {
     type: 'text' | 'password';
     value: string;
     label: string;
-    id: keyof T;
+    id: Path<T>;
     placeholder: string;
     helperText?: string;
-    error?: string | FormikErrors<any> | string[] | FormikErrors<any>[] | undefined;
+    error?: string | undefined;
     onChange: (e: string | ChangeEvent<any>) => void;
     onBlur?: (e: any) => void;
 };

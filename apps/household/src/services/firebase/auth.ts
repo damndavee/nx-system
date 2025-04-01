@@ -1,5 +1,13 @@
 import auth from '@react-native-firebase/auth';
 
+export const authStateChangeListener = () => {
+    return new Promise((resolve, reject) => {
+        return auth().onAuthStateChanged(user => {
+            if(user) resolve(user);
+        });
+    })
+};
+
 export const signUpWithEmail = async (email: string, password: string) => (
     auth().createUserWithEmailAndPassword(email, password)
     .then(() => {
@@ -17,3 +25,25 @@ export const signUpWithEmail = async (email: string, password: string) => (
         console.error(error);
     })
 );
+
+export const signInWithEmail = async (email: string, password: string) => {
+    try {
+        await auth().signInWithEmailAndPassword(email, password)
+        const idTokenResult = await auth().currentUser?.getIdTokenResult();
+        const token = idTokenResult?.token;
+
+        if(!token) return;
+        
+        // TODO: extract exp once biometrics?
+        const [headerEncoded, payloadEncoded] = token.split('.');
+
+        const decodedToken = JSON.parse(
+            Buffer.from(payloadEncoded, "base64").toString("ascii"),
+        );
+
+    } catch(error) {
+        console.log('ERROR: ', error.code);
+    }
+}
+
+export const signOut = async () => auth().signOut();

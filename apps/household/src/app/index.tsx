@@ -1,8 +1,8 @@
-import { WelcomeScreen } from "../features/welcome/screens";
+import { Redirect } from "expo-router";
 
 export const InitialPage = () => {
   return (
-    <WelcomeScreen />
+    <Redirect href="/welcome" />
   )
 };
 

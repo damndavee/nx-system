@@ -1,10 +1,11 @@
 import 'react-native-reanimated';
 import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
+import { router, Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from "expo-status-bar";
 import { useEffect } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import auth from '@react-native-firebase/auth';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -16,8 +17,17 @@ export default function RootLayout() {
 
     useEffect(() => {
         if (fontsLoaded) {
-            console.log("✅ Fonts Loaded!");
             SplashScreen.hideAsync();
+
+            const unsubscribe = auth().onAuthStateChanged((user) => {
+                if (user) {
+                  router.replace('/(onboarding)/pin');
+                } else {
+                  router.replace('/');
+                }
+              });
+        
+              return () => unsubscribe();
         }
     }, [fontsLoaded]);
 
