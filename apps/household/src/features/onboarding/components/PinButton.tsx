@@ -6,15 +6,15 @@ import { Icon, PinButtonProps } from '../types';
 const PinButton = (props: PinButtonProps) => {
   const generateButton = (input: string) => {
     if(isNaN(+input)) {
-      return <Ionicons name={input as Icon} size={24} color='black' />
+      return <Ionicons name={input as Icon} size={32} color='black' />
     }
 
-    return <Text className='text-xl text-black'>{input}</Text>
+    return <Text className='text-2xl font-medium text-black'>{input}</Text>
   }
 
   return (
     <Pressable
-        className={twMerge(`items-center active:bg-gray-200 justify-center flex-1`, props.className)}
+        className={twMerge(`bg-white m-2 rounded-lg shadow-slate-500 shadow-lg items-center active:bg-gray-50 justify-center flex-1`, props.className)}
         onPress={props.onPress}
     >
       {generateButton(props.label)}

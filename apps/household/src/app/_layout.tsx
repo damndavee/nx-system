@@ -6,6 +6,7 @@ import { StatusBar } from "expo-status-bar";
 import { useEffect } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import auth from '@react-native-firebase/auth';
+import { getPinEnabledBy } from '../stores/auth/auth.service';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -19,15 +20,18 @@ export default function RootLayout() {
         if (fontsLoaded) {
             SplashScreen.hideAsync();
 
-            const unsubscribe = auth().onAuthStateChanged((user) => {
+            const unsubscribe = auth().onAuthStateChanged(async (user) => {
+                console.log("USEROWSKI: ", user);
                 if (user) {
-                  router.replace('/(onboarding)/pin');
+                    const userPin = await getPinEnabledBy(user?.uid);
+                    
+                    router.replace('/(onboarding)/pin');
                 } else {
-                  router.replace('/');
+                    router.replace('/');
                 }
-              });
+            });
         
-              return () => unsubscribe();
+            return () => unsubscribe();
         }
     }, [fontsLoaded]);
 
