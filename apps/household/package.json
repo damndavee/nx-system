@@ -57,7 +57,11 @@
     "zod": "*",
     "buffer": "*",
     "react-native-otp-entry": "*",
-    "tailwind-merge": "*"
+    "tailwind-merge": "*",
+    "expo-secure-store": "*",
+    "expo-crypto": "*",
+    "expo-application": "*",
+    "@tanstack/react-query": "*"
   },
   "devDependencies": {
     "@eslint/js": "^9.8.0",
