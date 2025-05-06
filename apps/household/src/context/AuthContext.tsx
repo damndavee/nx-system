@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { createContext, useContext, ReactNode, useEffect } from 'react';
 import type { FirebaseAuthTypes } from '@react-native-firebase/auth';
 import { authStateChangeListener, signInWithEmail, signUpWithEmail } from '../services/firebase/auth';
@@ -19,18 +19,27 @@ const AuthContext = createContext<AuthContextProps | undefined>(undefined);
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     const currentUserQuery = useQuery({
         queryKey: ['authStateChangeListener'],
-        queryFn: () => authStateChangeListener(),
+        queryFn: async () => await authStateChangeListener(),
+        staleTime: Infinity,
     })
 
-    const signin = (email: string, password: string) => {
-        signInWithEmail(email, password);
-        currentUserQuery.refetch();
-    }
+    const signin = async (email: string, password: string) => {
+        try {
+            await signInWithEmail(email, password);
+            await currentUserQuery.refetch();
+        } catch (error) {
+            console.error("Error during signin or refetch:", error);
+        }
+    };
 
-    const signup = (email: string, password: string) => {
-        signUpWithEmail(email, password);
-        currentUserQuery.refetch();
-    } 
+    const signup = async (email: string, password: string) => {
+        try {
+            await signUpWithEmail(email, password);
+            await currentUserQuery.refetch();
+        } catch (error) {
+            console.error("Error during signup or refetch:", error);
+        }
+    };
     
     useEffect(() => {
         let route = '/welcome';
@@ -38,6 +47,9 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         const { user, userProfile } = currentUserQuery.data || {};
 
         switch (true) {
+            case !!user && userProfile?.isNewUser:
+                route = '/(onboarding)/setup-pin'
+                break;
             case !!user:
                 route = '/(auth)/pin';
                 break;

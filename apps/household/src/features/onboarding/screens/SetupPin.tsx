@@ -1,22 +1,16 @@
 import { Text, View, Pressable, StyleSheet } from 'react-native'
-import { useRef, useEffect } from 'react'
-import { OtpInput, OtpInputRef } from "react-native-otp-entry";
+import { OtpInput } from "react-native-otp-entry";
 import { SvgXml } from 'react-native-svg';
 import { lockSvgMarkup } from '../../../components/markups';
 import { Stack } from 'expo-router';
 import { PIN_BUTTONS } from '../../../data/pin.data';
-import { PinButton } from '../components/PinButton';
-import { Handlers } from '../types';
-import { usePinKeyboard } from '../hooks/usePinKeyboard';
+import { PinButton } from '../../onboarding/components/PinButton';
+import { Handlers } from '../../onboarding/types';
+import { usePinKeyboard } from '../../onboarding/hooks/usePinKeyboard';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-const PinScreen = () => {
-    const otpInputRef = useRef<OtpInputRef>(null);
-    const { isPinVisible, pin, disabled, submitPin, keyboardEvent } = usePinKeyboard();
-
-    useEffect(() => {
-        otpInputRef.current?.setValue(pin)
-    }, [pin])
+const SetupPinScreen = () => {
+    const { initalPin, submitPin, keyboardEvent, otpInputRef, error } = usePinKeyboard();
 
     return (
         <>
@@ -28,18 +22,19 @@ const PinScreen = () => {
                     </Pressable>
                     <View className='items-center justify-center w-3/4'>
                         <SvgXml xml={lockSvgMarkup} width="200" height="200" />
-                        <Text className='font-semibold text-xl text-center'>Ustaw swój Pin, którym będziesz logować się do aplikacji.</Text>
+                        <Text className='font-semibold text-xl text-center'>{initalPin ? 'Potwierdź swój PIN.' : 'Ustaw 4-cyfrowy PIN.'}</Text>
+                        <Text className='font-light text-md text-center'>Dzięki temu będziesz w stanie szybciej logować się do aplikacji.</Text>
                     </View>
-                    <OtpInput
-                        numberOfDigits={4}
-                        onFilled={submitPin}
-                        onTextChange={(text) => console.log("Text: ", text)}
-                        secureTextEntry={isPinVisible}
-                        theme={{ ...styles }}
-                        ref={otpInputRef}
-                        autoFocus={false}
-                        disabled={disabled}
-                    />
+                    <View className='gap-3'>
+                        <OtpInput
+                            numberOfDigits={4}
+                            onFilled={submitPin}
+                            theme={{ ...styles }}
+                            ref={otpInputRef}
+                            autoFocus={false}
+                        />
+                        {error && <Text className="text-red-500 text-center">{error}</Text>}
+                    </View>
                 </View>
                 <View className='w-full aspect-[7/6] grid grid-cols-3 p-3'>
                     {PIN_BUTTONS.map((row, rowIndex) => (
@@ -60,7 +55,7 @@ const PinScreen = () => {
     )
 }
 
-export { PinScreen };
+export { SetupPinScreen };
 
 const styles = StyleSheet.create({
     pinCodeTextStyle: {
