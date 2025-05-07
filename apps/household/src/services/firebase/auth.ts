@@ -1,6 +1,6 @@
 import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
-import { getDeviceId, removeDeviceId } from '../../stores/auth/auth.service';
+import { removePin } from '../../stores/auth/auth.service';
 import { UserProfile } from './types';
 
 export const authStateChangeListener = async (): Promise<{ user: FirebaseAuthTypes.User | null, userProfile: UserProfile | null }> => {
@@ -8,7 +8,7 @@ export const authStateChangeListener = async (): Promise<{ user: FirebaseAuthTyp
         const unsubscribe = auth().onAuthStateChanged(async (user) => {
             try {
                 if (!user) {
-                    removeDeviceId();
+                    removePin();
                     resolve({ user: null, userProfile: null });
                     return;
                 }

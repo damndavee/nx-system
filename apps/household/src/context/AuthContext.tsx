@@ -1,10 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { createContext, useContext, ReactNode, useEffect } from 'react';
 import type { FirebaseAuthTypes } from '@react-native-firebase/auth';
 import { authStateChangeListener, signInWithEmail, signUpWithEmail } from '../services/firebase/auth';
 import { UserProfile } from '../services/firebase/types';
 import { router } from 'expo-router';
+import { getPin } from '../stores/auth/auth.service';
 
 interface AuthContextProps {
     currentUser: FirebaseAuthTypes.User | null | undefined;
@@ -20,6 +21,12 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const currentUserQuery = useQuery({
         queryKey: ['authStateChangeListener'],
         queryFn: async () => await authStateChangeListener(),
+        staleTime: Infinity,
+    })
+
+    const pinQuery = useQuery({
+        queryKey: ['getPin'],
+        queryFn: async () => await getPin(),
         staleTime: Infinity,
     })
 
@@ -42,33 +49,35 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     };
     
     useEffect(() => {
-        let route = '/welcome';
-
-        const { user, userProfile } = currentUserQuery.data || {};
-
-        switch (true) {
-            case !!user && userProfile?.isNewUser:
-                route = '/(onboarding)/setup-pin'
-                break;
-            case !!user:
-                route = '/(auth)/pin';
-                break;
-            case userProfile?.isNewUser:
-                route = '/(onboarding)/welcome';
-                break;
-            case userProfile?.wasOnboardingShown:
-                route = '/(onboarding)/pin';
-                break;
-            default: 
-                route = '/welcome';
-                break;
+        if (currentUserQuery.isSuccess && pinQuery.isSuccess) {
+            let route = '/welcome';
+    
+            const { user, userProfile } = currentUserQuery.data || {};
+    
+            switch (true) {
+                case !!user && !!pinQuery.data:
+                    route = '/(auth)/pin';
+                    break;
+                case !!user && userProfile?.isNewUser:
+                    route = '/(onboarding)/setup-pin'
+                    break;
+                case userProfile?.isNewUser:
+                    route = '/(onboarding)/welcome';
+                    break;
+                case userProfile?.wasOnboardingShown:
+                    route = '/(onboarding)/pin';
+                    break;
+                default: 
+                    route = '/welcome';
+                    break;
+            }
+    
+            router.replace(route);
         }
-
-        router.replace(route);
-    }, [currentUserQuery.data])
+    }, [currentUserQuery.isSuccess, currentUserQuery.data])
 
     const logout = () => {
-        // Add logout logic here
+        //TODO: Add logout logic here
     };
 
     return (

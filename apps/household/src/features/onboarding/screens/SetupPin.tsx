@@ -2,7 +2,7 @@ import { Text, View, Pressable, StyleSheet } from 'react-native'
 import { OtpInput } from "react-native-otp-entry";
 import { SvgXml } from 'react-native-svg';
 import { lockSvgMarkup } from '../../../components/markups';
-import { Stack } from 'expo-router';
+import { Stack, usePathname } from 'expo-router';
 import { PIN_BUTTONS } from '../../../data/pin.data';
 import { PinButton } from '../../onboarding/components/PinButton';
 import { Handlers } from '../../onboarding/types';
@@ -11,19 +11,22 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 const SetupPinScreen = () => {
     const { initalPin, submitPin, keyboardEvent, otpInputRef, error } = usePinKeyboard();
+    const pathname = usePathname();
 
     return (
         <>
             <Stack.Screen options={{ headerShown: false }} />
             <SafeAreaView className='items-center justify-between flex-1 bg-[#f5f4f9]'>
                 <View className='items-center justify-center gap-10 bg-white rounded-b-[25] flex-1 w-full'>
-                    <Pressable className='absolute right-5 top-5'>
-                        <Text className='text-xl text-[#6c63ff]'>Pomiń</Text>
-                    </Pressable>
+                    {pathname.includes('setup') && (
+                        <Pressable className='absolute right-5 top-5'>
+                            <Text className='text-xl text-[#6c63ff]'>Pomiń</Text>
+                        </Pressable>
+                    )}
                     <View className='items-center justify-center w-3/4'>
                         <SvgXml xml={lockSvgMarkup} width="200" height="200" />
-                        <Text className='font-semibold text-xl text-center'>{initalPin ? 'Potwierdź swój PIN.' : 'Ustaw 4-cyfrowy PIN.'}</Text>
-                        <Text className='font-light text-md text-center'>Dzięki temu będziesz w stanie szybciej logować się do aplikacji.</Text>
+                        <Text className='font-semibold text-xl text-center'>{pathname.includes('setup') ? initalPin ? 'Potwierdź swój PIN.' : 'Ustaw 4-cyfrowy PIN.' : 'Witaj, {użytkownik}!'}</Text>
+                        <Text className='font-light text-md text-center'>{pathname.includes('setup') ? 'Dzięki temu będziesz w stanie szybciej logować się do aplikacji.' : 'Jak się masz? 😊'}</Text>
                     </View>
                     <View className='gap-3'>
                         <OtpInput
