@@ -1,11 +1,13 @@
 import 'react-native-reanimated';
 import { useFonts } from 'expo-font';
-import { router, Stack } from 'expo-router';
+import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from "expo-status-bar";
 import { useEffect } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import auth from '@react-native-firebase/auth';
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { signOut } from '../services/firebase/auth';
+import { AuthProvider } from '../context/AuthContext';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -15,19 +17,20 @@ export default function RootLayout() {
         SpaceMono: require('../../assets/fonts/SpaceMonoRegular.ttf'),
     });
 
+    const queryClient = new QueryClient({
+        defaultOptions: { 
+            queries: { 
+                retry: 3,
+                gcTime: 10 * 60 * 1000,
+                staleTime: Infinity  
+            } 
+        },
+    });
+
     useEffect(() => {
         if (fontsLoaded) {
             SplashScreen.hideAsync();
-
-            const unsubscribe = auth().onAuthStateChanged((user) => {
-                if (user) {
-                  router.replace('/(onboarding)/pin');
-                } else {
-                  router.replace('/');
-                }
-              });
-        
-              return () => unsubscribe();
+            // signOut()
         }
     }, [fontsLoaded]);
 
@@ -38,7 +41,11 @@ export default function RootLayout() {
     return (
         <SafeAreaProvider>
             <StatusBar backgroundColor='#fff' style='dark' />
-            <Stack screenOptions={{ headerShown: false }} />
+            <QueryClientProvider client={queryClient}>
+                <AuthProvider>
+                    <Stack screenOptions={{ headerShown: false }} />
+                </AuthProvider>
+            </QueryClientProvider>
         </SafeAreaProvider>
     );
 }

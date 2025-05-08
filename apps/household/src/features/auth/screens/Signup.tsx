@@ -8,9 +8,10 @@ import { cssInterop } from 'nativewind';
 import { router, Stack } from 'expo-router';
 import { signupSvgMarkup } from '../../../components/markups';
 import { INPUT_MAP } from "../../../data/auth.data";
-import { signUpWithEmail } from '../../../services/firebase/auth';
+import { useAuth } from '../../../context/AuthContext';
 
 const SignupScreen = () => {
+  const { signup } = useAuth();
   const { control, handleSubmit } = useForm<SignupFormSchema>({
       defaultValues: {
         email: '',
@@ -27,7 +28,8 @@ const SignupScreen = () => {
 
   const onSubmit = handleSubmit(
     (data) => {
-      signUpWithEmail(data.email, data.password);
+      signup(data.email, data.password);
+      router.back();
     }, 
     (errors) => console.log("ERRORS: ", errors));
 
