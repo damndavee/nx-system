@@ -61,7 +61,9 @@
     "expo-secure-store": "*",
     "expo-crypto": "*",
     "expo-application": "*",
-    "@tanstack/react-query": "*"
+    "@tanstack/react-query": "*",
+    "@reduxjs/toolkit": "*",
+    "react-redux": "*"
   },
   "devDependencies": {
     "@eslint/js": "^9.8.0",

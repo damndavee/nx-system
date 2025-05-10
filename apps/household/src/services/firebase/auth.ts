@@ -35,8 +35,6 @@ export const getUserProfile = async (uid: string): Promise<UserProfile> => {
     return data as UserProfile;
 }
 
-// TODO: add update user profile function
-
 export const signUpWithEmail = async (email: string, password: string) => (
     auth().createUserWithEmailAndPassword(email, password)
     .then(async ({ user }) => {
