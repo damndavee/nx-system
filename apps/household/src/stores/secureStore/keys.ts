@@ -1,2 +1,2 @@
 export const defaultKeychaninService = 'com.maddavee.household';
-export const pinEnabledByUserKey = 'pinEnabledBy';
+export const comboUserPinIdKey = 'comboUserPinId';

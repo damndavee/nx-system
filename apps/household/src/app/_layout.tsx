@@ -7,8 +7,6 @@ import { useEffect } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Provider } from "react-redux";
-import { signOut } from '../services/firebase/auth';
-import { AuthProvider } from '../context/AuthContext';
 import { store } from '../stores';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -18,7 +16,7 @@ export default function RootLayout() {
     const [fontsLoaded] = useFonts({
         SpaceMono: require('../../assets/fonts/SpaceMonoRegular.ttf'),
     });
-
+    
     const queryClient = new QueryClient({
         defaultOptions: { 
             queries: { 
@@ -45,9 +43,7 @@ export default function RootLayout() {
             <StatusBar backgroundColor='#fff' style='dark' />
             <QueryClientProvider client={queryClient}>
                 <Provider store={store}>
-                    <AuthProvider>
-                        <Stack screenOptions={{ headerShown: false }} />
-                    </AuthProvider>
+                    <Stack screenOptions={{ headerShown: false }} />
                 </Provider>
             </QueryClientProvider>
         </SafeAreaProvider>
