@@ -1,56 +1,51 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { deleteItem, getEncryptedValue, getItem, setItem } from "../secureStore";
-import { comboUserPinIdKey, } from "../secureStore/keys";
-import { FirebaseAuthTypes } from "@react-native-firebase/auth";
-import { UserProfile } from "./auth.types";
-import { setScreen, setUserProfile } from "./auth.reducer";
+import { PinDataPayload, ResolveRedirectPayload, SubmitPinResult } from "./auth.types";
+import { setScreen, setUserProfile, setInitialPin } from "./auth.reducer";
+import { getComboUserPinId, setComboUserPinId } from "../secureStore/service";
+import { RootState } from "..";
 
-export const getPinEnabledByThunk = createAsyncThunk<null | string, string>(
-    'auth/getPinEnabledBy',
-    async (userId, { rejectWithValue }) => {
-        const combo = await getItem(comboUserPinIdKey);
+export const submitPinThunk = createAsyncThunk<SubmitPinResult, PinDataPayload, { state: RootState }>(
+    'auth/submitPin',
+    async (data, { dispatch, rejectWithValue, fulfillWithValue, getState }) => {
+        const storedPin = await getComboUserPinId(data.userId);
+        const initialPin = getState().authReducer.initialPin;
 
-        if (!combo) {
-            rejectWithValue('No pin enabled by user found');
-            return null;
-        }
-        
-        const [pin, id] = combo.split('|');
-
-        if(id !== userId) {
-            rejectWithValue('User ID does not match');
-            return null
+        if(!initialPin) {
+            dispatch(setInitialPin(data.pin));
         }
 
-        return pin;
+        if(!storedPin) {
+            await setComboUserPinId(`${data.pin}|${data.userId}`);
+            return fulfillWithValue({
+                message: 'PIN successfully set',
+                isNewPin: true,
+            });
+        }
+
+        if (data.pin === storedPin) {
+            return fulfillWithValue({
+                message: 'PIN accepted',
+                isNewPin: false,
+            });
+        }
+
+        return rejectWithValue({
+            message: 'Incorrect PIN.',
+            isNewPin: false,
+        });
     }
 );
 
-export const setComboUserPinIdThunk = createAsyncThunk<void, string>(
-    'auth/setComboUserPinId',
-    async (combo: string) => {
-        const encryptedCombo = await getEncryptedValue(combo);
-        await setItem(comboUserPinIdKey, encryptedCombo);
-    }
-);
-
-export const removePinThunk = createAsyncThunk<void, void>(
-    'auth/removePin',
-    async () => {
-        await deleteItem(comboUserPinIdKey);
-    }
-);
-
-export const resolveRedirectScreenThunk = createAsyncThunk(
+export const resolveRedirectScreenThunk = createAsyncThunk<void, ResolveRedirectPayload>(
     'auth/resolveRedirectScreen',
     async (
-        payload: { user: FirebaseAuthTypes.User | null; userProfile: UserProfile | null | undefined },
+        payload,
         { dispatch }
     ) => {
         const { user, userProfile } = payload;
-        const pin = dispatch(getPinEnabledByThunk(user?.uid ?? ""));
+        const pin = getComboUserPinId(user?.uid ?? "");
 
-        let screen = '/welcome';
+        let screen = '/';
 
         switch (true) {
             case !!user && !!pin:
@@ -66,7 +61,7 @@ export const resolveRedirectScreenThunk = createAsyncThunk(
                 screen = '/(onboarding)/pin';
                 break;
             default:
-                screen = '/welcome';
+                screen = '/';
         }
 
         dispatch(setUserProfile(userProfile));

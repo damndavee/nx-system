@@ -8,10 +8,11 @@ import { cssInterop } from 'nativewind';
 import { router, Stack } from 'expo-router';
 import { signupSvgMarkup } from '../../../components/markups';
 import { INPUT_MAP } from "../../../data/auth.data";
-import { useAuth } from '../../../context/AuthContext';
+import { useSignUpMutation } from '../../../stores/auth/auth.api';
 
 const SignupScreen = () => {
-  const { signup } = useAuth();
+  const [signup] = useSignUpMutation();
+
   const { control, handleSubmit } = useForm<SignupFormSchema>({
       defaultValues: {
         email: '',
@@ -28,9 +29,10 @@ const SignupScreen = () => {
 
   const onSubmit = handleSubmit(
     (data) => {
-      signup(data.email, data.password);
-      router.back();
-    }, 
+      router.replace('/');
+      signup({ ...data });
+    },
+    // TODO: handle errors
     (errors) => console.log("ERRORS: ", errors));
 
   return (

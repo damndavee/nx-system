@@ -9,7 +9,7 @@ import { SigninFormSchema, validationSigninSchema } from "../../../validation/au
 import { Divider } from '../../../components/Divider';
 import { appleMarkup, facebookMarkup, googleMarkup, signinSvgMarkup } from '../../../components/markups';
 import { INPUT_MAP } from "../../../data/auth.data";
-import { useAuth } from '../../../context/AuthContext';
+import { useSignInMutation } from '../../../stores/auth/auth.api';
 
 const SigninScreen = () => {
   cssInterop(ScrollView, {
@@ -25,14 +25,15 @@ const SigninScreen = () => {
     resolver: zodResolver(validationSigninSchema)
   });
 
-  const { signin } = useAuth();
+  const [signin] = useSignInMutation();
 
   const SIGNIN_INPUT_DATA = INPUT_MAP.filter(input => input.id !== 'confirmPassword') as Pick<FormControlProps<SigninFormSchema>, 'id' | 'placeholder' | 'label' | 'helperText' | 'icon' | 'type'>[];
 
   const onSubmit = handleSubmit(
     (data) => {
-      router.back();
-      signin(data.email, data.password);
+      router.replace('/');
+      // TODO: handle errors
+      signin({ ...data });
     }, 
     (errors) => console.log("ERRORS: ", errors));
 

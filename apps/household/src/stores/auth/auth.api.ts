@@ -1,14 +1,14 @@
 // services/authApi.ts
 import { createApi, fakeBaseQuery } from '@reduxjs/toolkit/query/react';
-import auth, { FirebaseAuthTypes, signOut } from '@react-native-firebase/auth';
+import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
-import { UserProfile } from './auth.types';
+import { UserProfileQuery, UserProfile, AuthQueryParams, AuthQuery } from './auth.types';
 
 export const authApi = createApi({
     reducerPath: 'authApi',
     baseQuery: fakeBaseQuery(),
     endpoints: (builder) => ({
-        authStateChanged: builder.query<FirebaseAuthTypes.User | null, void>({
+        authStateChanged: builder.query<AuthQuery, void>({
             async queryFn() {
                 return new Promise((resolve, reject) => {
                     const unsubscribe = auth().onAuthStateChanged(async (user) => {
@@ -30,7 +30,7 @@ export const authApi = createApi({
                 });
             },
         }),
-        getProfile: builder.query<UserProfile | null | undefined, string>({
+        getProfile: builder.query<UserProfileQuery, string>({
             async queryFn(uid) {
                 try {
                     const doc = await firestore().collection('users').doc(uid).get();
@@ -46,7 +46,7 @@ export const authApi = createApi({
                 }
             },
         }),
-        signUp: builder.mutation<FirebaseAuthTypes.User | undefined, { email: string; password: string }>({
+        signUp: builder.mutation<AuthQuery, AuthQueryParams>({
             async queryFn({ email, password }) {
                 try {
                     const { user } = await auth().createUserWithEmailAndPassword(email, password);
@@ -65,7 +65,6 @@ export const authApi = createApi({
                         createdAt: new Date(),
                         updatedAt: new Date(),
                     })
-
 
                     if(!user) {
                         return { error: { message: 'User not found' } };
@@ -88,10 +87,10 @@ export const authApi = createApi({
                 }
             },
         }),
-        signIn: builder.mutation<null, { email: string; password: string }>({
+        signIn: builder.mutation<AuthQuery, AuthQueryParams>({
             async queryFn({ email, password }) {
                 try {
-                    await auth().signInWithEmailAndPassword(email, password)
+                    const { user } = await auth().signInWithEmailAndPassword(email, password);
                     const idTokenResult = await auth().currentUser?.getIdTokenResult();
                     const token = idTokenResult?.token;
 
@@ -99,7 +98,7 @@ export const authApi = createApi({
                         return { error: { message: 'Token not found' } };
                     }
                     
-                    return { data: null };
+                    return { data: user };
                 } catch (error: any) {
                     return { error: { message: error.message } };
                 }

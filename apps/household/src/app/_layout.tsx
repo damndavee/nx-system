@@ -30,7 +30,6 @@ export default function RootLayout() {
     useEffect(() => {
         if (fontsLoaded) {
             SplashScreen.hideAsync();
-            // signOut()
         }
     }, [fontsLoaded]);
 

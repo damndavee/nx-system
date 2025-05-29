@@ -12,8 +12,13 @@ authListener.startListening({
         authApi.endpoints.signUp.matchFulfilled
     ),
     effect: async (action, listenerApi) => {
-        const user = action.payload as FirebaseAuthTypes.User | null;
+        const user = action.payload as FirebaseAuthTypes.User | undefined;
+        
         const userProfile = (await listenerApi.dispatch(authApi.endpoints.getProfile.initiate(user?.uid ?? ''))).data;
+                
+        if(!userProfile) {
+            return;
+        }
 
         await listenerApi.dispatch(resolveRedirectScreenThunk({ user, userProfile }));
     },

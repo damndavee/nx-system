@@ -5,6 +5,7 @@ type AuthState = {
     hasBooted: boolean;
     screen: string;
     userProfile: UserProfile | null;
+    initialPin: string,
 }
 
 type SliceState = {
@@ -14,8 +15,9 @@ type SliceState = {
 
 const initialState: AuthState = {
     hasBooted: false,
-    screen: 'welcome',
+    screen: '/',
     userProfile: null,
+    initialPin: '',
 };
 
 const slice = createAppSlice({
@@ -30,6 +32,9 @@ const slice = createAppSlice({
         },
         setUserProfile: (state, action) => {
             state.userProfile = action.payload;
+        },
+        setInitialPin: (state, action) => {
+            state.initialPin = action.payload;
         }
     },
     selectors: {
@@ -38,6 +43,6 @@ const slice = createAppSlice({
     } as SliceState
 })
 
-export const { appStartup, setScreen, setUserProfile } = slice.actions;
+export const { appStartup, setScreen, setUserProfile, setInitialPin } = slice.actions;
 export const { selectScreen, selectUserProfile } = slice.selectors;
 export default slice.reducer;
