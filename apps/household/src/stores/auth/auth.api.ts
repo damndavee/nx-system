@@ -8,6 +8,20 @@ export const authApi = createApi({
     reducerPath: 'authApi',
     baseQuery: fakeBaseQuery(),
     endpoints: (builder) => ({
+        updateUserProfile: builder.mutation<void, { userId: string; updates: Partial<UserProfile> }>({
+            async queryFn({ userId, updates }) {
+                try {
+                    if (!userId) {
+                        return { error: { message: 'User ID is required' } };
+                    }
+                    const result = await firestore().collection('users').doc(userId).update(updates);
+
+                    return { data: result };
+                } catch (error: any) {
+                    return { error: { message: error.message } };
+                }
+            },
+        }),
         authStateChanged: builder.query<AuthQuery, void>({
             async queryFn() {
                 return new Promise((resolve, reject) => {

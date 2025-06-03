@@ -1,10 +1,23 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { PinDataPayload, ResolveRedirectPayload, SubmitPinResult } from "./auth.types";
+import { PinDataPayload, ResolveRedirectPayload, SubmitPinResult, UpdateProfilePayload } from "./auth.types";
 import { setScreen, setUserProfile, setInitialPin } from "./auth.reducer";
 import { getComboUserPinId, removePin, setComboUserPinId } from "../secureStore/service";
 import { RootState } from "..";
 import { getEncryptedValue } from "../secureStore";
 import { authApi } from "./auth.api";
+
+export const updateUserProfileThunk = createAsyncThunk<void, UpdateProfilePayload>(
+    'auth/updateUserProfile',
+    async ({ userId, updates }, { dispatch, rejectWithValue }) => {
+        const result = await dispatch(authApi.endpoints.updateUserProfile.initiate({ userId, updates }));
+        
+        if ('error' in result) {
+            return rejectWithValue(result.error);
+        }
+
+        return;
+    }   
+);
 
 export const loginByPinThunk = createAsyncThunk<SubmitPinResult, PinDataPayload, { state: RootState }>(
     'auth/loginByPin',
@@ -44,6 +57,11 @@ export const setupPinThunk = createAsyncThunk<SubmitPinResult, PinDataPayload, {
         }
 
         await setComboUserPinId(data.pin, data.userId);
+        dispatch(updateUserProfileThunk({
+            userId: data.userId,
+            updates: { isNewUser: false, wasOnboardingShown: true }
+        }));
+
         return fulfillWithValue({
             message: 'PIN successfully set',
             canProceed: true,
@@ -76,14 +94,11 @@ export const resolveRedirectScreenThunk = createAsyncThunk<void, ResolveRedirect
             case !!user && hasPin:
                 screen = '/(auth)/pin';
                 break;
+            case user && !userProfile?.isNewUser:
+                screen = '/(dashboard)';
+                break;
             case !!user && userProfile?.isNewUser:
                 screen = '/(onboarding)/setup-pin';
-                break;
-            case userProfile?.isNewUser:
-                screen = '/(onboarding)/welcome';
-                break;
-            case userProfile?.wasOnboardingShown:
-                screen = '/(onboarding)/pin';
                 break;
             default:
                 screen = '/';

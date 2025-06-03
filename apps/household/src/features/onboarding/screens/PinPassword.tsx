@@ -11,6 +11,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 export type PinPasswordScreenProps = {
     onSubmit: (pin: string) => void;
+    onSkip?: () => void;
     title: string;
     subtitle: string;
     error: string | null
@@ -32,7 +33,7 @@ const PinPasswordScreen = (props: PinPasswordScreenProps) => {
             <SafeAreaView className='items-center justify-between flex-1 bg-[#f5f4f9]'>
                 <View className='items-center justify-center gap-10 bg-white rounded-b-[25] flex-1 w-full'>
                     {pathname.includes('setup') && (
-                        <Pressable className='absolute right-5 top-5'>
+                        <Pressable onPress={props.onSkip} className='absolute right-5 top-5'>
                             <Text className='text-xl text-[#6c63ff]'>Pomiń</Text>
                         </Pressable>
                     )}

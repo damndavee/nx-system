@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { PinPasswordScreen } from '../../features/onboarding/screens'
 import { useAppSelector, useAppDispatch } from '../../stores';
 import { selectInitialPin, selectUserProfile } from '../../stores/auth/auth.reducer';
-import { setupPinThunk } from '../../stores/auth/auth.thunk';
+import { setupPinThunk, updateUserProfileThunk } from '../../stores/auth/auth.thunk';
 import { router } from 'expo-router';
 
 const SetupPinPage = () => {
@@ -25,10 +25,20 @@ const SetupPinPage = () => {
             router.replace('/(dashboard)');
         }
     }
+
+    const handleSkipPin = () => {
+        dispatch(updateUserProfileThunk({
+            userId: userProfile?.id ?? '',
+            updates: { isNewUser: false, wasOnboardingShown: true }
+        })).then(() => {
+            router.replace('/(dashboard)');
+        })
+    }
     
     return (
         <PinPasswordScreen 
             onSubmit={handlePinAuthentication} 
+            onSkip={handleSkipPin}
             title={initialPin ? 'Potwierdź swój PIN.' : 'Ustaw 4-cyfrowy PIN.'}
             subtitle='Dzięki temu będziesz w stanie szybciej logować się do aplikacji.'
             error={error}

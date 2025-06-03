@@ -15,6 +15,11 @@ export type UserProfile = {
     updatedAt?: Date;
 };
 
+export type UpdateProfilePayload = {
+    userId: string; 
+    updates: Partial<UserProfile>;
+}
+
 export type PinDataPayload = {
     pin: string;
     userId: string;
