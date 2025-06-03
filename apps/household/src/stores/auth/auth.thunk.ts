@@ -1,9 +1,10 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { PinDataPayload, ResolveRedirectPayload, SubmitPinResult } from "./auth.types";
 import { setScreen, setUserProfile, setInitialPin } from "./auth.reducer";
-import { getComboUserPinId, setComboUserPinId } from "../secureStore/service";
+import { getComboUserPinId, removePin, setComboUserPinId } from "../secureStore/service";
 import { RootState } from "..";
 import { getEncryptedValue } from "../secureStore";
+import { authApi } from "./auth.api";
 
 export const loginByPinThunk = createAsyncThunk<SubmitPinResult, PinDataPayload, { state: RootState }>(
     'auth/loginByPin',
@@ -32,7 +33,7 @@ export const setupPinThunk = createAsyncThunk<SubmitPinResult, PinDataPayload, {
             dispatch(setInitialPin(data.pin));
             return fulfillWithValue({
                 message: 'PIN successfully initialized',
-                isNewPin: true,
+                canProceed: false,
             });;
         }
 
@@ -45,8 +46,16 @@ export const setupPinThunk = createAsyncThunk<SubmitPinResult, PinDataPayload, {
         await setComboUserPinId(data.pin, data.userId);
         return fulfillWithValue({
             message: 'PIN successfully set',
-            isNewPin: true,
+            canProceed: true,
         });
+    }
+);
+
+export const signOutThunk = createAsyncThunk<void, void>(
+    'auth/signOut',
+    async (_, { dispatch }) => {
+        await dispatch(authApi.endpoints.signOut.initiate());
+        await removePin();
     }
 );
 

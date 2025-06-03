@@ -27,6 +27,7 @@ export type ResolveRedirectPayload = {
 
 export type SubmitPinResult = {
     message: string;
+    canProceed?: boolean
 }
 
 export type UserProfileQuery = UserProfile | null | undefined;

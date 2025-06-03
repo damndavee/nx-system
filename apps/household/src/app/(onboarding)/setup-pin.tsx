@@ -13,14 +13,16 @@ const SetupPinPage = () => {
     
     const handlePinAuthentication = async (pin: string) => {
         const result = await dispatch(setupPinThunk({ pin, userId: userProfile?.id ?? '' }));
-        const payload = result.payload as { message?: string };
-
+        const payload = result.payload as { message: string, canProceed: boolean };
+        
         // TODO: refactor this to use a more generic error handling
-        if (setupPinThunk.rejected.match(result) && payload.message) {
+        if (setupPinThunk.rejected.match(result)) {
             setError(payload.message)
-        } else {
+        }
+
+        if(payload.canProceed) {
             setError(null);
-            router.replace('/(dashboard)')
+            router.replace('/(dashboard)');
         }
     }
     
