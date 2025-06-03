@@ -4,14 +4,28 @@ import { SvgXml } from 'react-native-svg';
 import { lockSvgMarkup } from '../../../components/markups';
 import { Stack, usePathname } from 'expo-router';
 import { PIN_BUTTONS } from '../../../data/pin.data';
-import { PinButton } from '../../onboarding/components/PinButton';
-import { Handlers } from '../../onboarding/types';
-import { usePinKeyboard } from '../../onboarding/hooks/usePinKeyboard';
+import { PinButton } from '../components/PinButton';
+import { Handlers } from '../types';
+import { usePinKeyboard } from '../hooks/usePinKeyboard';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-const SetupPinScreen = () => {
-    const { initalPin, submitPin, keyboardEvent, otpInputRef, error } = usePinKeyboard();
+export type PinPasswordScreenProps = {
+    onSubmit: (pin: string) => void;
+    onSkip?: () => void;
+    title: string;
+    subtitle: string;
+    error: string | null
+}
+
+const PinPasswordScreen = (props: PinPasswordScreenProps) => {
+    const { onKeyboardEvent, otpInputRef, resetPin } = usePinKeyboard();
+
     const pathname = usePathname();
+
+    const handlePinSubmit = (pin: string) => {
+        props.onSubmit(pin);
+        resetPin()
+    }
 
     return (
         <>
@@ -19,24 +33,24 @@ const SetupPinScreen = () => {
             <SafeAreaView className='items-center justify-between flex-1 bg-[#f5f4f9]'>
                 <View className='items-center justify-center gap-10 bg-white rounded-b-[25] flex-1 w-full'>
                     {pathname.includes('setup') && (
-                        <Pressable className='absolute right-5 top-5'>
+                        <Pressable onPress={props.onSkip} className='absolute right-5 top-5'>
                             <Text className='text-xl text-[#6c63ff]'>Pomiń</Text>
                         </Pressable>
                     )}
                     <View className='items-center justify-center w-3/4'>
                         <SvgXml xml={lockSvgMarkup} width="200" height="200" />
-                        <Text className='font-semibold text-xl text-center'>{pathname.includes('setup') ? initalPin ? 'Potwierdź swój PIN.' : 'Ustaw 4-cyfrowy PIN.' : 'Witaj, {użytkownik}!'}</Text>
-                        <Text className='font-light text-md text-center'>{pathname.includes('setup') ? 'Dzięki temu będziesz w stanie szybciej logować się do aplikacji.' : 'Jak się masz? 😊'}</Text>
+                        <Text className='font-semibold text-xl text-center'>{props.title}</Text>
+                        <Text className='font-light text-md text-center'>{props.subtitle}</Text>
                     </View>
                     <View className='gap-3'>
                         <OtpInput
                             numberOfDigits={4}
-                            onFilled={submitPin}
+                            onFilled={handlePinSubmit}
                             theme={{ ...styles }}
                             ref={otpInputRef}
                             autoFocus={false}
                         />
-                        {error && <Text className="text-red-500 text-center">{error}</Text>}
+                        {props.error && <Text className="text-red-500 text-center">{props.error}</Text>}
                     </View>
                 </View>
                 <View className='w-full aspect-[7/6] grid grid-cols-3 p-3'>
@@ -47,7 +61,7 @@ const SetupPinScreen = () => {
                                     key={index}
                                     label={button.label}
                                     event={button.event as Handlers}
-                                    onPress={() => keyboardEvent(button.event as Handlers, button.value)}
+                                    onPress={() => onKeyboardEvent(button.event as Handlers, button.value)}
                                 />
                             ))}
                         </View>
@@ -58,7 +72,7 @@ const SetupPinScreen = () => {
     )
 }
 
-export { SetupPinScreen };
+export { PinPasswordScreen };
 
 const styles = StyleSheet.create({
     pinCodeTextStyle: {

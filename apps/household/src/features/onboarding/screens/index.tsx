@@ -1,1 +1,1 @@
-export { SetupPinScreen } from './SetupPin'
+export { PinPasswordScreen } from './PinPassword';

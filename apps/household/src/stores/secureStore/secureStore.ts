@@ -1,7 +1,7 @@
 import * as SecureStore from 'expo-secure-store';
 import * as Crypto from 'expo-crypto';
 import * as Application from 'expo-application';
-import { defaultKeychaninService } from './secureStore.keys';
+import { defaultKeychaninService } from './keys';
 
 const defaultOptions: SecureStore.SecureStoreOptions = {
     keychainService: defaultKeychaninService,

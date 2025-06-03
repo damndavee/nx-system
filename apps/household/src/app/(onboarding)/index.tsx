@@ -1,16 +1,15 @@
 import { Pressable, Text, View } from 'react-native';
-import { signOut } from "../../services/firebase/auth";
-import { router } from 'expo-router';
+import { useSignOutMutation } from '../../stores/auth/auth.api';
 
 const InitialPage = () => {
+
+  const [signOut] = useSignOutMutation();
 
   return (
     <View className='flex-1 bg-green-200 items-center justify-center'>
       <Text>Siemano witam zalogowanego koelgę!</Text>
       <Pressable className='p-5 bg-red-100 rounded-lg' onPress={() => {
-        // signOut();
-        signOut().then(() => router.replace('/welcome'))
-        
+        signOut()
       }}><Text>Signout!</Text></Pressable>
     </View>
   )

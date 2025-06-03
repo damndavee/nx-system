@@ -6,8 +6,8 @@ import { StatusBar } from "expo-status-bar";
 import { useEffect } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { signOut } from '../services/firebase/auth';
-import { AuthProvider } from '../context/AuthContext';
+import { Provider } from "react-redux";
+import { store } from '../stores';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -30,8 +30,8 @@ export default function RootLayout() {
     useEffect(() => {
         if (fontsLoaded) {
             SplashScreen.hideAsync();
-            // signOut()
         }
+
     }, [fontsLoaded]);
 
     if (!fontsLoaded) {
@@ -42,9 +42,9 @@ export default function RootLayout() {
         <SafeAreaProvider>
             <StatusBar backgroundColor='#fff' style='dark' />
             <QueryClientProvider client={queryClient}>
-                <AuthProvider>
+                <Provider store={store}>
                     <Stack screenOptions={{ headerShown: false }} />
-                </AuthProvider>
+                </Provider>
             </QueryClientProvider>
         </SafeAreaProvider>
     );
