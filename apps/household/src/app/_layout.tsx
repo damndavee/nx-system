@@ -16,7 +16,7 @@ export default function RootLayout() {
     const [fontsLoaded] = useFonts({
         SpaceMono: require('../../assets/fonts/SpaceMonoRegular.ttf'),
     });
-    
+
     const queryClient = new QueryClient({
         defaultOptions: { 
             queries: { 
@@ -31,6 +31,7 @@ export default function RootLayout() {
         if (fontsLoaded) {
             SplashScreen.hideAsync();
         }
+
     }, [fontsLoaded]);
 
     if (!fontsLoaded) {

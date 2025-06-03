@@ -1,6 +1,6 @@
 // services/authApi.ts
 import { createApi, fakeBaseQuery } from '@reduxjs/toolkit/query/react';
-import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
+import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import { UserProfileQuery, UserProfile, AuthQueryParams, AuthQuery } from './auth.types';
 

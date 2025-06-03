@@ -8,29 +8,22 @@ import { PinButton } from '../components/PinButton';
 import { Handlers } from '../types';
 import { usePinKeyboard } from '../hooks/usePinKeyboard';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useAppDispatch, useAppSelector } from '../../../stores';
-import { selectUserProfile } from '../../../stores/auth/auth.reducer';
-import { setupPinThunk } from '../../../stores/auth/auth.thunk';
-import { useSignOutMutation } from '../../../stores/auth/auth.api';
 
 export type PinPasswordScreenProps = {
     onSubmit: (pin: string) => void;
     title: string;
     subtitle: string;
+    error: string | null
 }
 
 const PinPasswordScreen = (props: PinPasswordScreenProps) => {
-    const { initalPin, onKeyboardEvent, otpInputRef, error } = usePinKeyboard();
-    const [signOut] = useSignOutMutation();
-    const userProfile = useAppSelector(selectUserProfile);
-    const dispatch = useAppDispatch();
+    const { onKeyboardEvent, otpInputRef, resetPin } = usePinKeyboard();
 
     const pathname = usePathname();
 
-    // signOut();
-
     const handlePinSubmit = (pin: string) => {
         props.onSubmit(pin);
+        resetPin()
     }
 
     return (
@@ -56,7 +49,7 @@ const PinPasswordScreen = (props: PinPasswordScreenProps) => {
                             ref={otpInputRef}
                             autoFocus={false}
                         />
-                        {error && <Text className="text-red-500 text-center">{error}</Text>}
+                        {props.error && <Text className="text-red-500 text-center">{props.error}</Text>}
                     </View>
                 </View>
                 <View className='w-full aspect-[7/6] grid grid-cols-3 p-3'>
